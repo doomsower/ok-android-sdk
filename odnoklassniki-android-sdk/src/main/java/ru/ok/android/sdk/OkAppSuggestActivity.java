@@ -1,5 +1,7 @@
 package ru.ok.android.sdk;
 
+import ru.ok.android.sdk.util.RequestCode;
+
 public class OkAppSuggestActivity extends OkAppInviteActivity {
 
     protected int getActivityView() {
@@ -9,6 +11,11 @@ public class OkAppSuggestActivity extends OkAppInviteActivity {
     @Override
     protected String getWidgetId() {
         return "WidgetSuggest";
+    }
+
+    @Override
+    protected RequestCode getRequestCode() {
+        return RequestCode.SUGGEST;
     }
 
     @Override

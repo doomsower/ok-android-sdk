@@ -1,7 +1,5 @@
 package ru.ok.android.sdk;
 
-import java.util.HashMap;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.webkit.WebView;
+import ru.ok.android.sdk.util.RequestCode;
 
 public class OkAppInviteActivity extends AbstractWidgetActivity {
 
@@ -45,6 +44,11 @@ public class OkAppInviteActivity extends AbstractWidgetActivity {
     }
 
     @Override
+    protected RequestCode getRequestCode() {
+        return RequestCode.INVITE;
+    }
+
+    @Override
     protected void processResult(String result) {
         Odnoklassniki odnoklassniki = Odnoklassniki.getInstance();
         if (odnoklassniki != null) {
@@ -52,12 +56,12 @@ public class OkAppInviteActivity extends AbstractWidgetActivity {
                 JSONObject json = new JSONObject(result);
                 String code = json.optString(Shared.PARAM_CODE);
                 if ("ok".equalsIgnoreCase(code)) {
-                    odnoklassniki.notifySuccess(json);
+                    odnoklassniki.notifySuccess(getRequestCode(), json);
                 } else {
-                    odnoklassniki.notifyFailed(json.getString(Shared.PARAM_MESSAGE));
+                    odnoklassniki.notifyFailed(getRequestCode(), json.getString(Shared.PARAM_MESSAGE));
                 }
             } catch (JSONException e) {
-                odnoklassniki.notifyFailed(result);
+                odnoklassniki.notifyFailed(getRequestCode(), result);
             }
         }
         finish();

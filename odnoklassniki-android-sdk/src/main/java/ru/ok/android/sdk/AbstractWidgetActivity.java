@@ -14,6 +14,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import ru.ok.android.sdk.util.OkEncryptUtil;
 import ru.ok.android.sdk.util.OkNetUtil;
+import ru.ok.android.sdk.util.RequestCode;
 
 public abstract class AbstractWidgetActivity extends Activity {
 
@@ -144,4 +145,6 @@ public abstract class AbstractWidgetActivity extends Activity {
             processError(getErrorMessage(error));
         }
     }
+
+    protected abstract RequestCode getRequestCode();
 }

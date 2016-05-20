@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -101,17 +100,39 @@ public class MainActivity extends Activity {
         });
 
         odnoklassniki = Odnoklassniki.createInstance(this, APP_ID, APP_KEY);
-        odnoklassniki.checkValidTokens(new OkListener() {
+        odnoklassniki.checkValidTokens(toasterListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        odnoklassniki.setOkListener(new OkListener() {
             @Override
-            public void onSuccess(JSONObject json) {
+            public void onSuccess(final JSONObject json) {
+                try {
+                    Toast.makeText(MainActivity.this,
+                            String.format("access_token: %s", json.getString("access_token")),
+                            Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 showForm();
             }
 
             @Override
             public void onError(String error) {
-                Toast.makeText(MainActivity.this, String.format("%s: %s", getString(R.string.error), error), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,
+                        String.format("%s: %s", getString(R.string.error), error),
+                        Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        odnoklassniki.removeOkListener();
     }
 
     protected final void showForm() {
@@ -176,31 +197,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(final View view) {
-            odnoklassniki.requestAuthorization(prepareOkListener(), REDIRECT_URL, authType, OkScope.VALUABLE_ACCESS);
-        }
-
-        @NonNull
-        private OkListener prepareOkListener() {
-            return new OkListener() {
-                @Override
-                public void onSuccess(final JSONObject json) {
-                    try {
-                        Toast.makeText(MainActivity.this,
-                                String.format("access_token: %s", json.getString("access_token")),
-                                Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    showForm();
-                }
-
-                @Override
-                public void onError(String error) {
-                    Toast.makeText(MainActivity.this,
-                            String.format("%s: %s", getString(R.string.error), error),
-                            Toast.LENGTH_SHORT).show();
-                }
-            };
+            odnoklassniki.requestAuthorization(REDIRECT_URL, authType, OkScope.VALUABLE_ACCESS);
         }
     }
 

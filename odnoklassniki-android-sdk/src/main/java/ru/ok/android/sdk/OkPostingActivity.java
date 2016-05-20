@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.webkit.WebView;
+import ru.ok.android.sdk.util.RequestCode;
 
 public class OkPostingActivity extends AbstractWidgetActivity {
 
@@ -47,6 +48,11 @@ public class OkPostingActivity extends AbstractWidgetActivity {
     }
 
     @Override
+    protected RequestCode getRequestCode() {
+        return RequestCode.MEDIATOPIC_POST;
+    }
+
+    @Override
     protected void processError(final String error) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(error);
@@ -73,12 +79,12 @@ public class OkPostingActivity extends AbstractWidgetActivity {
                 JSONObject json = new JSONObject(result);
                 String type = json.getString(Shared.PARAM_TYPE);
                 if ("error".equals(type)) {
-                    odnoklassniki.notifyFailed(json.getString(Shared.PARAM_MESSAGE));
+                    odnoklassniki.notifyFailed(getRequestCode(), json.getString(Shared.PARAM_MESSAGE));
                 } else {
-                    odnoklassniki.notifySuccess(json);
+                    odnoklassniki.notifySuccess(getRequestCode(), json);
                 }
             } catch (JSONException e) {
-                odnoklassniki.notifyFailed(result);
+                odnoklassniki.notifyFailed(getRequestCode(), result);
             }
         }
         finish();

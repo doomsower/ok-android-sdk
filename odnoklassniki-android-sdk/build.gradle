@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
 dependencies {
     compile 'com.android.support:support-annotations:+'
 }
 
 android {
-    compileSdkVersion rootProject.property("android.compile.sdk.version") as int
-    buildToolsVersion rootProject.property("android.build.tools.version")
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 21
